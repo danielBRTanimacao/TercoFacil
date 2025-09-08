@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jim+Nightshade&display=swap");
+
+@import "tailwindcss";
+
+:root {
+    --bg-brown-lightness: #f8ede5;
+    --bg-brown: #8d4d44;
+    --bg-brown-hover: #c88676;
+    --bg-light-brown: #ebb3a3;
+
+    --bg-lightness-wine: #f2c9d7;
+    --bg-pink-wine: #f39ebd;
+    --bg-pink-wine-hover: #d6749b;
+    --bg-light-wine: #8f395e;
+    --bg-dark-wine: #562e46;
+}
+
+body {
+    background-color: var(--bg-brown-lightness);
+}
+
+.text-dark-wine {
+    color: #422032;
+}
+
+.font-nightshade {
+    font-family: "Jim Nightshade", cursive;
+    font-style: normal;
+}
+
+.font-playfair {
+    font-family: "Playfair", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.bg-btn-brown {
+    background-color: var(--bg-light-brown);
+}
+
+.bg-btn-brown:hover {
+    background-color: var(--bg-brown-hover);
+}
+
+.bg-brown {
+    background-color: var(--bg-brown);
+}
+
+.bg-light-brown {
+    transition: all ease-in-out 0.2s;
+    background-color: var(--bg-light-brown);
+}
+
+.bg-light-brown:hover {
+    background-color: var(--bg-brown-hover);
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (width >= 40rem) {
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+@media (width >= 48rem) {
+    .container {
+        padding: 0 3rem;
+    }
+}
+
+@media (width >= 80rem) {
+    .container {
+        padding: 0 6rem;
+    }
+}
