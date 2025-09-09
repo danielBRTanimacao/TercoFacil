@@ -13,26 +13,20 @@ const count = ref(0);
                 <img src="../assets/icons/coal.png" alt="img" />
                 <p>{{ count }}</p>
             </div>
-            <nav class="font-playfair">
+            <nav class="font-playfair text-brown">
                 <button
                     type="button"
-                    class="px-4 py-2 cursor-pointer bg-light-brown rounded-full text-lg"
+                    class="px-4 py-2 cursor-pointer bg-light-brown rounded-sm text-lg"
                 >
                     Estilizar
                 </button>
                 <button
                     type="button"
-                    class="ms-2 px-4 py-2 cursor-pointer bg-light-brown rounded-full text-lg"
+                    class="ms-2 px-4 py-2 cursor-pointer bg-light-brown rounded-sm text-lg"
                 >
                     Sobre
                 </button>
             </nav>
         </div>
     </header>
-    <aside class="text-center pt-5 italic">
-        <p class="font-nightshade text-3xl lg:text-5xl text-dark-wine">
-            O Terço é a 'arma' para estes tempos.
-        </p>
-        <p class="opacity-50 text-sm">~São Padre Pio de Pietrelcina</p>
-    </aside>
 </template>

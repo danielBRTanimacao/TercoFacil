@@ -20,6 +20,10 @@ body {
     background-color: var(--bg-brown-lightness);
 }
 
+.text-brown {
+    color: var(--bg-brown);
+}
+
 .text-dark-wine {
     color: #422032;
 }
@@ -49,11 +53,12 @@ body {
 
 .bg-light-brown {
     transition: all ease-in-out 0.2s;
-    background-color: var(--bg-light-brown);
+    background-color: var(--bg-brown-lightness);
 }
 
 .bg-light-brown:hover {
     background-color: var(--bg-brown-hover);
+    color: white !important;
 }
 
 .container {
