@@ -26,9 +26,13 @@ const startPray = () => {
             <div
                 class="h-[55dvh] overflow-auto flex items-center flex-col gap-3"
             >
-                <div v-for="value in 14" :key="value">
+                <div v-for="value in 15" :key="value">
                     <div
-                        v-if="value == 11"
+                        v-if="value == 1"
+                        class="rounded-full w-10 h-10 bg-gray-900"
+                    ></div>
+                    <div
+                        v-else-if="value == 11"
                         class="rounded-full w-10 h-10 bg-gray-900"
                     ></div>
                     <div v-else class="rounded-full w-6 h-6 bg-gray-900"></div>
@@ -57,24 +61,23 @@ const startPray = () => {
             </div>
             <aside v-else class="p-2">
                 <div class="container">
-                    <p class="py-2 text-white">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Nisi at quidem quo modi praesentium beatae. Commodi
-                        facilis totam, facere odio animi doloribus enim ullam.
-                        Odit aperiam ipsa ducimus quidem voluptate.
+                    <p
+                        class="py-2 text-white text-center md:text-xl font-semibold"
+                    >
+                        Começar fazendo o creio em Deus pai.
                     </p>
                     <div
-                        class="flex flex-col md:flex-row gap-5 justify-between text-brown"
+                        class="flex md:flex-row gap-5 justify-between text-brown"
                     >
                         <button
                             type="button"
-                            class="w-full text-lg md:text-4xl font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                            class="opacity-75 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
                         >
                             VOLTAR
                         </button>
                         <button
                             type="button"
-                            class="w-full text-lg md:text-4xl font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
                         >
                             PROSSEGUIR
                         </button>

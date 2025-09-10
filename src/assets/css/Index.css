@@ -51,9 +51,21 @@ body {
     background-color: var(--bg-brown);
 }
 
-.bg-light-brown {
+.bg-light-brown,
+.bg-outline-light-brown {
     transition: all ease-in-out 0.2s;
     background-color: var(--bg-brown-lightness);
+}
+
+.bg-outline-light-brown {
+    outline: 2px solid #f8ede556;
+    color: var(--bg-brown-lightness);
+    background-color: transparent;
+}
+
+.bg-outline-light-brown:hover {
+    outline: none;
+    background-color: var(--bg-brown-hover);
 }
 
 .bg-light-brown:hover {
