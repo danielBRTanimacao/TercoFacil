@@ -5,7 +5,6 @@ import TercoComun from "./assets/json/terco_comum.json";
 import TercoQuaresma from "./assets/json/terco_quaresma.json";
 
 import Header from "./components/Header.vue";
-import { getActualTime } from "./util/GetTimers";
 
 const crucifixImage = ref(null);
 const actualTerco = ref(null);
@@ -35,15 +34,23 @@ onMounted(() => {
     }
 
     if (actualTerco.value) {
-        let timeActual = getActualTime();
-        if (timeActual == { monthIndex: 2, dayIndex: 5 }) {
-            // Pegar o dia correto e fazer validação
+        if (isQuarema()) {
             console.log(TercoQuaresma);
         } else {
             console.log(TercoComun);
         }
     }
 });
+
+function isQuarema() {
+    const today = new Date();
+    const year = today.getFullYear();
+
+    const quaresmaStart = new Date(year, 2, 5);
+    const quaresmaEnd = new Date(year, 3, 17);
+
+    return today >= quaresmaStart && today <= quaresmaEnd;
+}
 </script>
 
 <template>
@@ -62,7 +69,7 @@ onMounted(() => {
 
             <div
                 ref="actualTerco"
-                class="h-[55dvh] overflow-auto flex items-center flex-col gap-3"
+                class="h-[55dvh] overflow-hidden flex items-center justify-center flex-col gap-3"
             >
                 <div
                     v-for="value in 59"
@@ -94,6 +101,7 @@ onMounted(() => {
                     ></div>
                     <div
                         v-else-if="value == 59"
+                        ref="actualTerco"
                         class="rounded-full w-10 h-10 bg-gray-900"
                     ></div>
                     <div v-else class="rounded-full w-6 h-6 bg-gray-900"></div>
