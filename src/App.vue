@@ -1,12 +1,49 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+
+import TercoComun from "./assets/json/terco_comum.json";
+import TercoQuaresma from "./assets/json/terco_quaresma.json";
+
 import Header from "./components/Header.vue";
+import { getActualTime } from "./util/GetTimers";
+
+const crucifixImage = ref(null);
+const actualTerco = ref(null);
+const focusMistery = ref(null);
 
 const started = ref(false);
 
 const startPray = () => {
     started.value = !started.value;
 };
+
+const nextMistery = () => {
+    if (focusMistery.value) {
+        crucifixImage.value.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
+};
+
+onMounted(() => {
+    if (crucifixImage.value) {
+        crucifixImage.value.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
+
+    if (actualTerco.value) {
+        let timeActual = getActualTime();
+        if (timeActual == { monthIndex: 2, dayIndex: 5 }) {
+            // Pegar o dia correto e fazer validação
+            console.log(TercoQuaresma);
+        } else {
+            console.log(TercoComun);
+        }
+    }
+});
 </script>
 
 <template>
@@ -16,7 +53,7 @@ const startPray = () => {
         <main
             class="flex-1 flex flex-col justify-center items-center text-center"
         >
-            <aside class="pt-5 italic" v-if="!started">
+            <aside class="italic pb-5" v-if="!started">
                 <p class="font-nightshade text-3xl lg:text-5xl text-dark-wine">
                     O Terço é a 'arma' para estes tempos.
                 </p>
@@ -24,24 +61,53 @@ const startPray = () => {
             </aside>
 
             <div
+                ref="actualTerco"
                 class="h-[55dvh] overflow-auto flex items-center flex-col gap-3"
             >
-                <div v-for="value in 15" :key="value">
+                <div
+                    v-for="value in 59"
+                    :key="value"
+                    :class="{
+                        'opacity-25 transition-all duration-700 ease-in-out':
+                            started,
+                    }"
+                >
                     <div
-                        v-if="value == 1"
+                        v-if="value == 11"
                         class="rounded-full w-10 h-10 bg-gray-900"
                     ></div>
                     <div
-                        v-else-if="value == 11"
+                        v-else-if="value == 22"
+                        class="rounded-full w-10 h-10 bg-gray-900"
+                    ></div>
+                    <div
+                        v-else-if="value == 33"
+                        class="rounded-full w-10 h-10 bg-gray-900"
+                    ></div>
+                    <div
+                        v-else-if="value == 44"
+                        class="rounded-full w-10 h-10 bg-gray-900"
+                    ></div>
+                    <div
+                        v-else-if="value == 55"
+                        class="rounded-full w-10 h-10 bg-gray-900"
+                    ></div>
+                    <div
+                        v-else-if="value == 59"
                         class="rounded-full w-10 h-10 bg-gray-900"
                     ></div>
                     <div v-else class="rounded-full w-6 h-6 bg-gray-900"></div>
                 </div>
 
                 <img
+                    ref="crucifixImage"
+                    :class="{
+                        'scale-125 transition-all duration-700 ease-in-out':
+                            started,
+                    }"
                     width="175"
                     src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
-                    alt=""
+                    alt="crucifixImage"
                 />
             </div>
         </main>

@@ -27,13 +27,13 @@ const count = ref(0);
             <nav class="font-playfair text-brown">
                 <button
                     type="button"
-                    class="px-4 py-2 cursor-pointer bg-light-brown rounded-sm text-lg"
+                    class="px-4 py-2 cursor-pointer rounded-sm text-lg opacity-75 bg-outline-light-brown"
                 >
                     Estilizar
                 </button>
                 <button
                     type="button"
-                    class="ms-2 px-4 py-2 cursor-pointer bg-light-brown rounded-sm text-lg"
+                    class="ms-2 px-4 py-2 cursor-pointer opacity-75 bg-outline-light-brown rounded-sm text-lg"
                 >
                     Sobre
                 </button>
