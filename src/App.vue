@@ -18,7 +18,6 @@ const tercoData = ref(null);
 const oracoesDoDia = ref(null);
 const misteriosDoDia = ref(null);
 const currentStep = ref(0);
-const currentMystery = ref(0);
 const currentPrayer = ref("");
 const stepType = ref("");
 const daysPrayed = ref(0);
@@ -53,8 +52,6 @@ const startPray = () => {
     misteriosDoDia.value = tercoData.value.dias[dayOfWeek].oracoes.misterios;
 
     currentStep.value = 0;
-    currentMystery.value = 0;
-
     updateContent();
 
     const timer = setInterval(() => {
@@ -110,44 +107,42 @@ const nextMistery = () => {
     }
 };
 
+const getSteps = (oracoes, misterios) => {
+    const steps = [];
+    steps.push({ type: "inicio", text: oracoes.inicio });
+    steps.push({ type: "creio", text: oracoes.crucifixo });
+    steps.push({ type: "paiNosso", text: oracoes.paiNosso });
+    steps.push({ type: "aveMaria", text: oracoes.aveMaria, count: 3 });
+    steps.push({ type: "gloria", text: oracoes.gloria });
+
+    for (let i = 0; i < 5; i++) {
+        steps.push({ type: "anunciacaoMisterio", text: misterios[i] });
+        steps.push({ type: "paiNosso", text: oracoes.paiNosso });
+        steps.push({ type: "aveMaria", text: oracoes.aveMaria, count: 10 });
+        steps.push({ type: "gloria", text: oracoes.gloria });
+    }
+
+    steps.push({ type: "salveRainha", text: oracoes.salveRainha });
+    return steps;
+};
+
 const updateContent = () => {
     const oracoes = oracoesDoDia.value;
     const misterios = misteriosDoDia.value;
 
-    const steps = [
-        { type: "inicio", text: oracoes.inicio },
-        { type: "creio", text: oracoes.crucifixo },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 3 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "anunciacaoMisterio", text: misterios[0] },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "anunciacaoMisterio", text: misterios[1] },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "anunciacaoMisterio", text: misterios[2] },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "anunciacaoMisterio", text: misterios[3] },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "anunciacaoMisterio", text: misterios[4] },
-        { type: "paiNosso", text: oracoes.paiNosso },
-        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
-        { type: "gloria", text: oracoes.gloria },
-        { type: "salveRainha", text: oracoes.salveRainha },
-    ];
+    const steps = getSteps(oracoes, misterios);
 
     if (currentStep.value < steps.length) {
         const step = steps[currentStep.value];
         currentPrayer.value = step.text;
         stepType.value = step.type;
-        currentMystery.value = misterios.indexOf(step.text);
+
+        if (step.type === "anunciacaoMisterio") {
+            const mysteryIndex = misterios.indexOf(step.text);
+            if (mysteryIndex !== -1) {
+                currentMystery.value = mysteryIndex;
+            }
+        }
     } else {
         currentPrayer.value = "Terço concluído! Amém.";
         stepType.value = "end";
