@@ -14,10 +14,48 @@ const started = ref(false);
 const showButtons = ref(false);
 const countdown = ref(5);
 
+const tercoData = ref(null);
+const oracoesDoDia = ref(null);
+const misteriosDoDia = ref(null);
+const currentStep = ref(0);
+const currentMystery = ref(0);
+const currentPrayer = ref("");
+const stepType = ref("");
+const daysPrayed = ref(0);
+
+const daysMap = {
+    domingo: "domingo",
+    "segunda-feira": "segunda",
+    "terça-feira": "terça",
+    "quarta-feira": "quarta",
+    "quinta-feira": "quinta",
+    "sexta-feira": "sexta",
+    sábado: "sábado",
+};
+
 const startPray = () => {
     started.value = true;
     showButtons.value = false;
     countdown.value = 5;
+
+    const dayNameFull = new Date()
+        .toLocaleDateString("pt-BR", { weekday: "long" })
+        .toLowerCase();
+    const dayOfWeek = daysMap[dayNameFull];
+
+    if (!dayOfWeek) {
+        console.error("Nome do dia da semana não encontrado no mapeamento.");
+        return;
+    }
+
+    tercoData.value = isQuarema() ? TercoQuaresma : TercoComun;
+    oracoesDoDia.value = tercoData.value.dias[dayOfWeek].oracoes;
+    misteriosDoDia.value = tercoData.value.dias[dayOfWeek].oracoes.misterios;
+
+    currentStep.value = 0;
+    currentMystery.value = 0;
+
+    updateContent();
 
     const timer = setInterval(() => {
         countdown.value--;
@@ -35,9 +73,35 @@ const startPray = () => {
     }
 };
 
-const backMistery = () => {};
+const backMistery = () => {
+    if (currentStep.value > 0) {
+        currentStep.value--;
+        updateContent();
+        showButtons.value = false;
+        countdown.value = 5;
+        const timer = setInterval(() => {
+            countdown.value--;
+            if (countdown.value === 0) {
+                clearInterval(timer);
+                showButtons.value = true;
+            }
+        }, 1000);
+    }
+};
 
 const nextMistery = () => {
+    currentStep.value++;
+    updateContent();
+    showButtons.value = false;
+    countdown.value = 5;
+    const timer = setInterval(() => {
+        countdown.value--;
+        if (countdown.value === 0) {
+            clearInterval(timer);
+            showButtons.value = true;
+        }
+    }, 1000);
+
     if (focusMistery.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
@@ -46,30 +110,80 @@ const nextMistery = () => {
     }
 };
 
+const updateContent = () => {
+    const oracoes = oracoesDoDia.value;
+    const misterios = misteriosDoDia.value;
+
+    const steps = [
+        { type: "inicio", text: oracoes.inicio },
+        { type: "creio", text: oracoes.crucifixo },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 3 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "anunciacaoMisterio", text: misterios[0] },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "anunciacaoMisterio", text: misterios[1] },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "anunciacaoMisterio", text: misterios[2] },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "anunciacaoMisterio", text: misterios[3] },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "anunciacaoMisterio", text: misterios[4] },
+        { type: "paiNosso", text: oracoes.paiNosso },
+        { type: "aveMaria", text: oracoes.aveMaria, count: 10 },
+        { type: "gloria", text: oracoes.gloria },
+        { type: "salveRainha", text: oracoes.salveRainha },
+    ];
+
+    if (currentStep.value < steps.length) {
+        const step = steps[currentStep.value];
+        currentPrayer.value = step.text;
+        stepType.value = step.type;
+        currentMystery.value = misterios.indexOf(step.text);
+    } else {
+        currentPrayer.value = "Terço concluído! Amém.";
+        stepType.value = "end";
+
+        const lastPrayedDate = localStorage.getItem("lastPrayedDate");
+        const today = new Date().toDateString();
+
+        if (lastPrayedDate !== today) {
+            const currentDays = parseInt(localStorage.getItem("days"), 10) || 0;
+            const newDays = currentDays + 1;
+            localStorage.setItem("days", newDays);
+            localStorage.setItem("lastPrayedDate", today);
+            daysPrayed.value = newDays;
+        }
+    }
+};
+
 onMounted(() => {
+    const storedDays = localStorage.getItem("days");
+    if (storedDays) {
+        daysPrayed.value = parseInt(storedDays, 10);
+    }
+
     if (crucifixImage.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
             block: "center",
         });
     }
-
-    if (actualTerco.value) {
-        if (isQuarema()) {
-            console.log(TercoQuaresma);
-        } else {
-            console.log(TercoComun);
-        }
-    }
 });
 
 function isQuarema() {
     const today = new Date();
     const year = today.getFullYear();
-
     const quaresmaStart = new Date(year, 2, 5);
     const quaresmaEnd = new Date(year, 3, 17);
-
     return today >= quaresmaStart && today <= quaresmaEnd;
 }
 </script>
@@ -92,6 +206,10 @@ function isQuarema() {
                 ref="actualTerco"
                 class="h-[55dvh] overflow-hidden flex items-center justify-center flex-col gap-3"
             >
+                <div class="text-3xl text-white font-bold mb-4">
+                    {{ daysPrayed }}
+                </div>
+
                 <div
                     v-for="value in 59"
                     :key="value"
@@ -159,46 +277,45 @@ function isQuarema() {
                     <p
                         class="py-2 text-white text-center md:text-xl font-semibold"
                     >
-                        <span>Começar fazendo o creio em Deus pai.</span>
+                        <span
+                            v-if="
+                                stepType === 'anunciacaoMisterio' &&
+                                misteriosDoDia
+                            "
+                            class="block italic pb-2"
+                        >
+                            {{ misteriosDoDia[currentMystery] }}
+                        </span>
+                        <span>{{ currentPrayer }}</span>
                     </p>
                     <div
-                        v-if="showButtons"
                         class="flex md:flex-row gap-5 justify-between text-brown"
                     >
                         <button
                             @click="backMistery"
                             type="button"
-                            class="opacity-75 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                            :disabled="!showButtons"
+                            :class="{
+                                'opacity-75 cursor-not-allowed': !showButtons,
+                                'cursor-pointer': showButtons,
+                            }"
+                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown font-black py-2 md:py-3 rounded-md"
                         >
-                            VOLTAR
+                            <span v-if="showButtons">VOLTAR</span>
+                            <span v-else>{{ countdown }}s</span>
                         </button>
                         <button
                             @click="nextMistery"
                             type="button"
-                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                            :disabled="!showButtons"
+                            :class="{
+                                'opacity-75 cursor-not-allowed': !showButtons,
+                                'cursor-pointer': showButtons,
+                            }"
+                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown font-black py-2 md:py-3 rounded-md"
                         >
-                            PROSSEGUIR
-                        </button>
-                    </div>
-                    <div
-                        v-else
-                        class="flex md:flex-row gap-5 justify-between text-brown"
-                    >
-                        <button
-                            @click="backMistery"
-                            type="button"
-                            class="flex items-center justify-center gap-1 opacity-75 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
-                        >
-                            <span>{{ countdown }}</span
-                            ><span>s</span>
-                        </button>
-                        <button
-                            @click="nextMistery"
-                            type="button"
-                            class="flex items-center justify-center gap-1 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
-                        >
-                            <span>{{ countdown }}</span
-                            ><span>s</span>
+                            <span v-if="showButtons">PROSSEGUIR</span>
+                            <span v-else>{{ countdown }}s</span>
                         </button>
                     </div>
                 </div>
