@@ -22,6 +22,9 @@ const currentPrayer = ref("");
 const stepType = ref("");
 const daysPrayed = ref(0);
 
+const aveMariaCount = ref(0);
+const totalAveMarias = ref(0);
+
 const daysMap = {
     domingo: "domingo",
     "segunda-feira": "segunda",
@@ -52,6 +55,7 @@ const startPray = () => {
     misteriosDoDia.value = tercoData.value.dias[dayOfWeek].oracoes.misterios;
 
     currentStep.value = 0;
+    aveMariaCount.value = 0;
     updateContent();
 
     const timer = setInterval(() => {
@@ -70,23 +74,7 @@ const startPray = () => {
     }
 };
 
-const backMistery = () => {
-    if (currentStep.value > 0) {
-        currentStep.value--;
-        updateContent();
-        showButtons.value = false;
-        countdown.value = 5;
-        const timer = setInterval(() => {
-            countdown.value--;
-            if (countdown.value === 0) {
-                clearInterval(timer);
-                showButtons.value = true;
-            }
-        }, 1000);
-    }
-};
-
-const nextMistery = () => {
+const nextStep = () => {
     currentStep.value++;
     updateContent();
     showButtons.value = false;
@@ -104,6 +92,16 @@ const nextMistery = () => {
             behavior: "smooth",
             block: "center",
         });
+    }
+};
+
+const prayAveMaria = () => {
+    if (aveMariaCount.value < totalAveMarias.value) {
+        aveMariaCount.value++;
+    }
+
+    if (aveMariaCount.value === totalAveMarias.value) {
+        nextStep();
     }
 };
 
@@ -131,6 +129,7 @@ const updateContent = () => {
     const misterios = misteriosDoDia.value;
 
     const steps = getSteps(oracoes, misterios);
+    aveMariaCount.value = 0;
 
     if (currentStep.value < steps.length) {
         const step = steps[currentStep.value];
@@ -142,6 +141,10 @@ const updateContent = () => {
             if (mysteryIndex !== -1) {
                 currentMystery.value = mysteryIndex;
             }
+        }
+
+        if (step.type === "aveMaria") {
+            totalAveMarias.value = step.count;
         }
     } else {
         currentPrayer.value = "Terço concluído! Amém.";
@@ -165,7 +168,6 @@ onMounted(() => {
     if (storedDays) {
         daysPrayed.value = parseInt(storedDays, 10);
     }
-
     if (crucifixImage.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
@@ -283,24 +285,28 @@ function isQuarema() {
                         </span>
                         <span>{{ currentPrayer }}</span>
                     </p>
-                    <div
-                        class="flex md:flex-row gap-5 justify-between text-brown"
-                    >
+                    <div class="flex md:flex-row gap-5 justify-end text-brown">
                         <button
-                            @click="backMistery"
+                            v-if="stepType === 'aveMaria'"
+                            @click="prayAveMaria"
                             type="button"
                             :disabled="!showButtons"
                             :class="{
                                 'opacity-75 cursor-not-allowed': !showButtons,
                                 'cursor-pointer': showButtons,
                             }"
-                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown font-black py-2 md:py-3 rounded-md"
+                            class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown font-black py-2 md:py-3 rounded-md"
                         >
-                            <span v-if="showButtons">VOLTAR</span>
+                            <span v-if="showButtons"
+                                >Ave Maria ({{ aveMariaCount }} /
+                                {{ totalAveMarias }})</span
+                            >
                             <span v-else>{{ countdown }}s</span>
                         </button>
+
                         <button
-                            @click="nextMistery"
+                            v-else
+                            @click="nextStep"
                             type="button"
                             :disabled="!showButtons"
                             :class="{
