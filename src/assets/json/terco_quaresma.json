@@ -1,16 +1,132 @@
 {
-    "tempoAtual": "quaresma",
-    "observacao": "Durante a Quaresma, enfatizam-se os mistérios dolorosos.",
-    "oracoesEspeciais": {
-        "inicio": "Pelo sinal da Santa Cruz...",
-        "crucifixo": "Creio em Deus Pai Todo-Poderoso...",
-        "tresAveMarias": "Ave Maria cheia de graça...",
-        "misteriosPreferenciais": [
-            "A Agonia de Jesus no Horto das Oliveiras",
-            "A Flagelação de Jesus",
-            "A Coroação de Espinhos",
-            "Jesus carrega a Cruz",
-            "A Crucificação e Morte de Jesus"
-        ]
+    "nome": "Terço da Quaresma",
+    "observacao": "Durante a Quaresma, reza-se os mistérios dolorosos. Este Terço foca na Paixão de Cristo e nos seus sofrimentos pela salvação da humanidade.",
+    "dias": {
+        "domingo": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "segunda": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "terca": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "quarta": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "quinta": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "sexta": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        },
+        "sabado": {
+            "misterios": "Mistérios Dolorosos",
+            "oracoes": {
+                "inicio": "Pelo sinal da Santa Cruz...",
+                "creio": "Creio em Deus Pai Todo-Poderoso...",
+                "paiNosso": "Pai Nosso que estais no Céu...",
+                "aveMaria": "Ave Maria, cheia de graça...",
+                "gloria": "Glória ao Pai, ao Filho e ao Espírito Santo...",
+                "salveRainha": "Salve Rainha, Mãe de misericórdia...",
+                "misterios": [
+                    "Primeiro Mistério Doloroso: A Agonia de Jesus no Horto das Oliveiras",
+                    "Segundo Mistério Doloroso: A Flagelação de Jesus",
+                    "Terceiro Mistério Doloroso: A Coroação de Espinhos",
+                    "Quarto Mistério Doloroso: Jesus carrega a Cruz ao Calvário",
+                    "Quinto Mistério Doloroso: A Crucificação e Morte de Jesus"
+                ]
+            }
+        }
     }
 }

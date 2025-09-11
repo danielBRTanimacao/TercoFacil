@@ -8,7 +8,7 @@ import Header from "./components/Header.vue";
 
 const crucifixImage = ref(null);
 const actualTerco = ref(null);
-const focusMistery = ref(null);
+const focusedBeadRef = ref(null);
 
 const started = ref(false);
 const showButtons = ref(false);
@@ -21,6 +21,7 @@ const currentStep = ref(0);
 const currentPrayer = ref("");
 const stepType = ref("");
 const daysPrayed = ref(0);
+const currentMystery = ref(0);
 
 const aveMariaCount = ref(0);
 const totalAveMarias = ref(0);
@@ -87,7 +88,7 @@ const nextStep = () => {
         }
     }, 1000);
 
-    if (focusMistery.value) {
+    if (crucifixImage.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -237,7 +238,7 @@ function isQuarema() {
                     ></div>
                     <div
                         v-else-if="value == 59"
-                        ref="actualTerco"
+                        ref="focusedBeadRef"
                         class="rounded-full w-10 h-10 bg-gray-900"
                     ></div>
                     <div v-else class="rounded-full w-6 h-6 bg-gray-900"></div>
@@ -249,7 +250,7 @@ function isQuarema() {
                         'scale-125 transition-all duration-700 ease-in-out':
                             started,
                     }"
-                    width="175"
+                    width="172"
                     src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
                     alt="crucifixImage"
                 />
