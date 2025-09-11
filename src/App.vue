@@ -11,10 +11,31 @@ const actualTerco = ref(null);
 const focusMistery = ref(null);
 
 const started = ref(false);
+const showButtons = ref(false);
+const countdown = ref(5);
 
 const startPray = () => {
-    started.value = !started.value;
+    started.value = true;
+    showButtons.value = false;
+    countdown.value = 5;
+
+    const timer = setInterval(() => {
+        countdown.value--;
+        if (countdown.value === 0) {
+            clearInterval(timer);
+            showButtons.value = true;
+        }
+    }, 1000);
+
+    if (crucifixImage.value) {
+        crucifixImage.value.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
 };
+
+const backMistery = () => {};
 
 const nextMistery = () => {
     if (focusMistery.value) {
@@ -138,22 +159,46 @@ function isQuarema() {
                     <p
                         class="py-2 text-white text-center md:text-xl font-semibold"
                     >
-                        Começar fazendo o creio em Deus pai.
+                        <span>Começar fazendo o creio em Deus pai.</span>
                     </p>
                     <div
+                        v-if="showButtons"
                         class="flex md:flex-row gap-5 justify-between text-brown"
                     >
                         <button
+                            @click="backMistery"
                             type="button"
                             class="opacity-75 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
                         >
                             VOLTAR
                         </button>
                         <button
+                            @click="nextMistery"
                             type="button"
                             class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
                         >
                             PROSSEGUIR
+                        </button>
+                    </div>
+                    <div
+                        v-else
+                        class="flex md:flex-row gap-5 justify-between text-brown"
+                    >
+                        <button
+                            @click="backMistery"
+                            type="button"
+                            class="flex items-center justify-center gap-1 opacity-75 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-outline-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                        >
+                            <span>{{ countdown }}</span
+                            ><span>s</span>
+                        </button>
+                        <button
+                            @click="nextMistery"
+                            type="button"
+                            class="flex items-center justify-center gap-1 w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown cursor-pointer font-black py-2 md:py-3 rounded-md"
+                        >
+                            <span>{{ countdown }}</span
+                            ><span>s</span>
                         </button>
                     </div>
                 </div>
