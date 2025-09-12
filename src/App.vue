@@ -192,7 +192,7 @@ function isQuarema() {
 
 <template>
     <div class="flex flex-col min-h-screen">
-        <Header @open-about="showAboutModal = true" />
+        <Header :days-prayed="daysPrayed" @open-about="showAboutModal = true" />
 
         <main
             class="flex-1 flex flex-col justify-center items-center text-center"
@@ -222,9 +222,7 @@ function isQuarema() {
                             'w-6 h-6': !lagerMistery.includes(value),
                             'w-10 h-10': lagerMistery.includes(value),
                         }"
-                    >
-                        {{ value }}
-                    </div>
+                    ></div>
                 </div>
 
                 <img
