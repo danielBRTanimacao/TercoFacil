@@ -9,7 +9,7 @@ import About from "./components/ui/modal/About.vue";
 
 const crucifixImage = ref(null);
 const actualTerco = ref(null);
-const focusMistery = ref(null);
+const focusMistery = ref(60);
 
 const started = ref(false);
 const showButtons = ref(false);
@@ -28,7 +28,7 @@ const currentMystery = ref(0);
 const aveMariaCount = ref(0);
 const totalAveMarias = ref(0);
 
-const lagerMistery = [11, 22, 33, 44, 55, 59];
+const lagerMistery = [11, 22, 33, 44, 55, 59, 60];
 
 const daysMap = {
     domingo: "domingo",
@@ -71,6 +71,7 @@ const startPray = () => {
         }
     }, 1000);
 
+    focusMistery.value = 60;
     if (crucifixImage.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
@@ -82,6 +83,38 @@ const startPray = () => {
 const nextStep = () => {
     currentStep.value++;
     updateContent();
+
+    if (stepType.value === "creio") {
+        focusMistery.value = 59;
+    } else if (stepType.value === "paiNosso") {
+        focusMistery.value = 58;
+    } else if (stepType.value === "aveMaria") {
+        // As 3 Ave Marias iniciais
+        if (currentStep.value === 3) {
+            focusMistery.value = 57;
+        } else if (currentStep.value === 4) {
+            focusMistery.value = 56;
+        } else if (currentStep.value === 5) {
+            focusMistery.value = 55;
+        } else {
+            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
+            const initialBead = 54 - misteryIndex * 11;
+            focusMistery.value = initialBead - aveMariaCount.value;
+        }
+    } else if (stepType.value === "gloria") {
+        if (currentStep.value === 6) {
+            focusMistery.value = 54;
+        } else {
+            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
+            focusMistery.value = 54 - misteryIndex * 11 - 10;
+        }
+    } else if (stepType.value === "anunciacaoMisterio") {
+        const misteryIndex = Math.floor((currentStep.value - 6) / 4);
+        focusMistery.value = 54 - misteryIndex * 11 - 11;
+    } else if (stepType.value === "salveRainha") {
+        focusMistery.value = 1;
+    }
+
     showButtons.value = false;
     countdown.value = 5;
     const timer = setInterval(() => {
@@ -92,8 +125,9 @@ const nextStep = () => {
         }
     }, 1000);
 
-    if (focusedBeadRef.value) {
-        focusedBeadRef.value.scrollIntoView({
+    const focusedBead = document.getElementById(`bead-${focusMistery.value}`);
+    if (focusedBead) {
+        focusedBead.scrollIntoView({
             behavior: "smooth",
             block: "center",
         });
@@ -103,6 +137,13 @@ const nextStep = () => {
 const prayAveMaria = () => {
     if (aveMariaCount.value < totalAveMarias.value) {
         aveMariaCount.value++;
+        if (totalAveMarias.value === 3) {
+            focusMistery.value = 57 - aveMariaCount.value + 1;
+        } else if (totalAveMarias.value === 10) {
+            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
+            const initialBead = 54 - misteryIndex * 11;
+            focusMistery.value = initialBead - aveMariaCount.value + 1;
+        }
     }
 
     if (aveMariaCount.value === totalAveMarias.value) {
@@ -154,6 +195,7 @@ const updateContent = () => {
     } else {
         currentPrayer.value = "Terço concluído! Amém.";
         stepType.value = "end";
+        focusMistery.value = 0;
 
         const lastPrayedDate = localStorage.getItem("lastPrayedDate");
         const today = new Date().toDateString();
@@ -173,12 +215,7 @@ onMounted(() => {
     if (storedDays) {
         daysPrayed.value = parseInt(storedDays, 10);
     }
-    if (crucifixImage.value) {
-        crucifixImage.value.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-    }
+    focusMistery.value = 0;
 });
 
 function isQuarema() {
@@ -211,9 +248,11 @@ function isQuarema() {
                 <div
                     v-for="value in 59"
                     :key="value"
+                    :id="`bead-${value}`"
                     :class="{
                         'opacity-25 transition-all duration-700 ease-in-out':
                             started,
+                        'scale-125 opacity-100': focusMistery == value,
                     }"
                 >
                     <div
@@ -224,12 +263,14 @@ function isQuarema() {
                         }"
                     ></div>
                 </div>
-
                 <img
                     ref="crucifixImage"
+                    id="bead-60"
                     :class="{
                         'scale-125 transition-all duration-700 ease-in-out':
                             started,
+                        'opacity-100': focusMistery === 60,
+                        'opacity-25': started && focusMistery !== 60,
                     }"
                     width="175"
                     src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
