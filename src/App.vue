@@ -5,14 +5,16 @@ import TercoComun from "./assets/json/terco_comum.json";
 import TercoQuaresma from "./assets/json/terco_quaresma.json";
 
 import Header from "./components/Header.vue";
+import About from "./components/ui/modal/About.vue";
 
 const crucifixImage = ref(null);
 const actualTerco = ref(null);
-const focusedBeadRef = ref(null);
+const focusMistery = ref(null);
 
 const started = ref(false);
 const showButtons = ref(false);
 const countdown = ref(5);
+const showAboutModal = ref(false);
 
 const tercoData = ref(null);
 const oracoesDoDia = ref(null);
@@ -88,8 +90,8 @@ const nextStep = () => {
         }
     }, 1000);
 
-    if (crucifixImage.value) {
-        crucifixImage.value.scrollIntoView({
+    if (focusedBeadRef.value) {
+        focusedBeadRef.value.scrollIntoView({
             behavior: "smooth",
             block: "center",
         });
@@ -188,7 +190,7 @@ function isQuarema() {
 
 <template>
     <div class="flex flex-col min-h-screen">
-        <Header />
+        <Header @open-about="showAboutModal = true" />
 
         <main
             class="flex-1 flex flex-col justify-center items-center text-center"
@@ -250,7 +252,7 @@ function isQuarema() {
                         'scale-125 transition-all duration-700 ease-in-out':
                             started,
                     }"
-                    width="172"
+                    width="175"
                     src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
                     alt="crucifixImage"
                 />
@@ -323,5 +325,7 @@ function isQuarema() {
                 </div>
             </aside>
         </footer>
+
+        <About v-if="showAboutModal" @close="showAboutModal = false" />
     </div>
 </template>
