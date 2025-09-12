@@ -8,8 +8,7 @@ import Header from "./components/Header.vue";
 import About from "./components/ui/modal/About.vue";
 
 const crucifixImage = ref(null);
-const actualTerco = ref(null);
-const focusMistery = ref(60);
+const focusMistery = ref(17);
 
 const started = ref(false);
 const showButtons = ref(false);
@@ -28,7 +27,7 @@ const currentMystery = ref(0);
 const aveMariaCount = ref(0);
 const totalAveMarias = ref(0);
 
-const lagerMistery = [11, 22, 33, 44, 55, 59, 60];
+const lagerMistery = [1, 12, 16];
 
 const daysMap = {
     domingo: "domingo",
@@ -71,7 +70,7 @@ const startPray = () => {
         }
     }, 1000);
 
-    focusMistery.value = 60;
+    focusMistery.value = 17;
     if (crucifixImage.value) {
         crucifixImage.value.scrollIntoView({
             behavior: "smooth",
@@ -84,35 +83,33 @@ const nextStep = () => {
     currentStep.value++;
     updateContent();
 
-    if (stepType.value === "creio") {
-        focusMistery.value = 59;
-    } else if (stepType.value === "paiNosso") {
-        focusMistery.value = 58;
-    } else if (stepType.value === "aveMaria") {
-        // As 3 Ave Marias iniciais
-        if (currentStep.value === 3) {
-            focusMistery.value = 57;
-        } else if (currentStep.value === 4) {
-            focusMistery.value = 56;
-        } else if (currentStep.value === 5) {
-            focusMistery.value = 55;
-        } else {
-            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
-            const initialBead = 54 - misteryIndex * 11;
-            focusMistery.value = initialBead - aveMariaCount.value;
-        }
-    } else if (stepType.value === "gloria") {
-        if (currentStep.value === 6) {
-            focusMistery.value = 54;
-        } else {
-            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
-            focusMistery.value = 54 - misteryIndex * 11 - 10;
-        }
+    if (currentStep.value === 1) {
+        focusMistery.value = 17;
+    } else if (currentStep.value === 2) {
+        focusMistery.value = 16;
+    } else if (currentStep.value === 3) {
+        focusMistery.value = 15;
+    } else if (currentStep.value === 4) {
+        focusMistery.value = 14;
+    } else if (currentStep.value === 5) {
+        focusMistery.value = 13;
+    } else if (currentStep.value === 6) {
+        focusMistery.value = 12;
     } else if (stepType.value === "anunciacaoMisterio") {
-        const misteryIndex = Math.floor((currentStep.value - 6) / 4);
-        focusMistery.value = 54 - misteryIndex * 11 - 11;
+        const mysteryBase = 12 - currentMystery.value * 2;
+        focusMistery.value = mysteryBase;
+    } else if (stepType.value === "paiNosso" && currentStep.value > 6) {
+        const mysteryBase = 12 - currentMystery.value * 2;
+        focusMistery.value = mysteryBase;
+    } else if (stepType.value === "aveMaria" && totalAveMarias.value === 10) {
+        const mysteryBase = 11 - currentMystery.value * 2;
+        focusMistery.value = mysteryBase;
+    } else if (stepType.value === "gloria" && currentStep.value > 6) {
+        focusMistery.value = 1;
     } else if (stepType.value === "salveRainha") {
         focusMistery.value = 1;
+    } else {
+        focusMistery.value = 0;
     }
 
     showButtons.value = false;
@@ -137,12 +134,14 @@ const nextStep = () => {
 const prayAveMaria = () => {
     if (aveMariaCount.value < totalAveMarias.value) {
         aveMariaCount.value++;
+
         if (totalAveMarias.value === 3) {
-            focusMistery.value = 57 - aveMariaCount.value + 1;
+            focusMistery.value = 15 - (aveMariaCount.value - 1);
         } else if (totalAveMarias.value === 10) {
-            const misteryIndex = Math.floor((currentStep.value - 6) / 4);
-            const initialBead = 54 - misteryIndex * 11;
-            focusMistery.value = initialBead - aveMariaCount.value + 1;
+            const mysteryStartBead = 11;
+            const currentAveMariaBead =
+                mysteryStartBead - (aveMariaCount.value - 1);
+            focusMistery.value = currentAveMariaBead;
         }
     }
 
@@ -234,7 +233,11 @@ function isQuarema() {
         <main
             class="flex-1 flex flex-col justify-center items-center text-center"
         >
-            <aside class="italic pb-5" v-if="!started">
+            <aside
+                class="italic pb-5 transition-all"
+                :class="{ 'transform translate-y-full opacity-0': started }"
+                v-if="!started"
+            >
                 <p class="font-nightshade text-3xl lg:text-5xl text-dark-wine">
                     O Terço é a 'arma' para estes tempos.
                 </p>
@@ -246,7 +249,7 @@ function isQuarema() {
                 class="h-[55dvh] overflow-hidden flex items-center justify-center flex-col gap-3"
             >
                 <div
-                    v-for="value in 59"
+                    v-for="value in 16"
                     :key="value"
                     :id="`bead-${value}`"
                     :class="{
@@ -256,21 +259,28 @@ function isQuarema() {
                     }"
                 >
                     <div
-                        class="rounded-full bg-gray-900 text-white"
+                        class="rounded-full bg-gray-900 text-white flex items-center justify-center"
                         :class="{
                             'w-6 h-6': !lagerMistery.includes(value),
                             'w-10 h-10': lagerMistery.includes(value),
                         }"
-                    ></div>
+                    >
+                        <span v-if="value === 12">
+                            {{ currentMystery + 1 }}
+                        </span>
+                        <span v-else-if="value >= 2 && value <= 11">
+                            {{ value - 1 }}
+                        </span>
+                    </div>
                 </div>
                 <img
                     ref="crucifixImage"
-                    id="bead-60"
+                    id="bead-17"
                     :class="{
                         'scale-125 transition-all duration-700 ease-in-out':
                             started,
-                        'opacity-100': focusMistery === 60,
-                        'opacity-25': started && focusMistery !== 60,
+                        'opacity-100': focusMistery === 17,
+                        'opacity-25': started && focusMistery !== 17,
                     }"
                     width="175"
                     src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
