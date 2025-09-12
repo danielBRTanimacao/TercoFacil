@@ -28,6 +28,8 @@ const currentMystery = ref(0);
 const aveMariaCount = ref(0);
 const totalAveMarias = ref(0);
 
+const lagerMistery = [11, 22, 33, 44, 55, 59];
+
 const daysMap = {
     domingo: "domingo",
     "segunda-feira": "segunda",
@@ -206,10 +208,6 @@ function isQuarema() {
                 ref="actualTerco"
                 class="h-[55dvh] overflow-hidden flex items-center justify-center flex-col gap-3"
             >
-                <div class="text-3xl text-white font-bold mb-4">
-                    {{ daysPrayed }}
-                </div>
-
                 <div
                     v-for="value in 59"
                     :key="value"
@@ -219,31 +217,14 @@ function isQuarema() {
                     }"
                 >
                     <div
-                        v-if="value == 11"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div
-                        v-else-if="value == 22"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div
-                        v-else-if="value == 33"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div
-                        v-else-if="value == 44"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div
-                        v-else-if="value == 55"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div
-                        v-else-if="value == 59"
-                        ref="focusedBeadRef"
-                        class="rounded-full w-10 h-10 bg-gray-900"
-                    ></div>
-                    <div v-else class="rounded-full w-6 h-6 bg-gray-900"></div>
+                        class="rounded-full bg-gray-900 text-white"
+                        :class="{
+                            'w-6 h-6': !lagerMistery.includes(value),
+                            'w-10 h-10': lagerMistery.includes(value),
+                        }"
+                    >
+                        {{ value }}
+                    </div>
                 </div>
 
                 <img

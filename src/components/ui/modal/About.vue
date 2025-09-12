@@ -1,6 +1,6 @@
 <template>
     <div
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="fixed inset-0 bg-gray-500/50 bg-opacity flex items-center justify-center z-50"
     >
         <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg mx-auto">
             <h2 class="text-2xl font-bold mb-4">Sobre o Terço Digital</h2>
