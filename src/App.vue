@@ -9,6 +9,7 @@ import About from "./components/ui/modal/About.vue";
 
 const crucifixImage = ref(null);
 const focusMistery = ref(17);
+const hideInitialBeads = ref(false);
 
 const started = ref(false);
 const showButtons = ref(false);
@@ -43,6 +44,7 @@ const startPray = () => {
     started.value = true;
     showButtons.value = false;
     countdown.value = 5;
+    hideInitialBeads.value = false;
 
     const dayNameFull = new Date()
         .toLocaleDateString("pt-BR", { weekday: "long" })
@@ -88,24 +90,19 @@ const nextStep = () => {
     } else if (currentStep.value === 2) {
         focusMistery.value = 16;
     } else if (currentStep.value === 3) {
-        focusMistery.value = 15;
-    } else if (currentStep.value === 4) {
-        focusMistery.value = 14;
-    } else if (currentStep.value === 5) {
+        focusMistery.value = 16;
+    } else if (stepType.value === "gloria" && currentStep.value <= 5) {
         focusMistery.value = 13;
-    } else if (currentStep.value === 6) {
-        focusMistery.value = 12;
     } else if (stepType.value === "anunciacaoMisterio") {
-        const mysteryBase = 12 - currentMystery.value * 2;
-        focusMistery.value = mysteryBase;
-    } else if (stepType.value === "paiNosso" && currentStep.value > 6) {
-        const mysteryBase = 12 - currentMystery.value * 2;
-        focusMistery.value = mysteryBase;
-    } else if (stepType.value === "aveMaria" && totalAveMarias.value === 10) {
-        const mysteryBase = 11 - currentMystery.value * 2;
-        focusMistery.value = mysteryBase;
-    } else if (stepType.value === "gloria" && currentStep.value > 6) {
-        focusMistery.value = 1;
+        hideInitialBeads.value = true;
+        const mysteryBead = 12 - currentMystery.value * 2;
+        focusMistery.value = mysteryBead;
+    } else if (stepType.value === "paiNosso" && currentStep.value > 5) {
+        const mysteryBead = 12 - currentMystery.value * 2;
+        focusMistery.value = mysteryBead;
+    } else if (stepType.value === "gloria" && currentStep.value > 5) {
+        const lastAveMariaBead = 11 - currentMystery.value * 2;
+        focusMistery.value = lastAveMariaBead;
     } else if (stepType.value === "salveRainha") {
         focusMistery.value = 1;
     } else {
@@ -132,17 +129,13 @@ const nextStep = () => {
 };
 
 const prayAveMaria = () => {
-    if (aveMariaCount.value < totalAveMarias.value) {
-        aveMariaCount.value++;
+    aveMariaCount.value++;
 
-        if (totalAveMarias.value === 3) {
-            focusMistery.value = 15 - (aveMariaCount.value - 1);
-        } else if (totalAveMarias.value === 10) {
-            const mysteryStartBead = 11;
-            const currentAveMariaBead =
-                mysteryStartBead - (aveMariaCount.value - 1);
-            focusMistery.value = currentAveMariaBead;
-        }
+    if (totalAveMarias.value === 3) {
+        focusMistery.value = 15 - (aveMariaCount.value - 1);
+    } else if (totalAveMarias.value === 10) {
+        const mysteryStartBead = 11 - currentMystery.value * 2;
+        focusMistery.value = mysteryStartBead - (aveMariaCount.value - 1);
     }
 
     if (aveMariaCount.value === totalAveMarias.value) {
@@ -174,7 +167,6 @@ const updateContent = () => {
     const misterios = misteriosDoDia.value;
 
     const steps = getSteps(oracoes, misterios);
-    aveMariaCount.value = 0;
 
     if (currentStep.value < steps.length) {
         const step = steps[currentStep.value];
@@ -190,6 +182,7 @@ const updateContent = () => {
 
         if (step.type === "aveMaria") {
             totalAveMarias.value = step.count;
+            aveMariaCount.value = 0;
         }
     } else {
         currentPrayer.value = "Terço concluído! Amém.";
@@ -246,7 +239,7 @@ function isQuarema() {
 
             <div
                 ref="actualTerco"
-                class="h-[55dvh] overflow-hidden flex items-center justify-center flex-col gap-3"
+                class="h-[55dvh] w-full overflow-hidden flex items-center justify-center flex-col gap-3"
             >
                 <div
                     v-for="value in 16"
@@ -255,6 +248,7 @@ function isQuarema() {
                     :class="{
                         'opacity-25 transition-all duration-700 ease-in-out':
                             started,
+                        hidden: hideInitialBeads && value > 12,
                         'scale-125 opacity-100': focusMistery == value,
                     }"
                 >
@@ -279,6 +273,7 @@ function isQuarema() {
                     :class="{
                         'scale-125 transition-all duration-700 ease-in-out':
                             started,
+                        hidden: hideInitialBeads,
                         'opacity-100': focusMistery === 17,
                         'opacity-25': started && focusMistery !== 17,
                     }"
@@ -314,7 +309,7 @@ function isQuarema() {
                             "
                             class="block italic pb-2"
                         >
-                            {{ misteriosDoDia[currentMystery] }}
+                            {{ currentMystery + 1 }}º Misterio
                         </span>
                         <span>{{ currentPrayer }}</span>
                     </p>
