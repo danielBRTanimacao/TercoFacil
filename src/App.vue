@@ -8,7 +8,7 @@ import Header from "./components/Header.vue";
 import About from "./components/ui/modal/About.vue";
 
 const crucifixImage = ref(null);
-const focusMistery = ref(17);
+const focusMistery = ref(0);
 const hideInitialBeads = ref(false);
 
 const started = ref(false);
@@ -40,106 +40,9 @@ const daysMap = {
     sábado: "sábado",
 };
 
-const startPray = () => {
-    started.value = true;
-    showButtons.value = false;
-    countdown.value = 3;
-    hideInitialBeads.value = false;
-
-    const dayNameFull = new Date()
-        .toLocaleDateString("pt-BR", { weekday: "long" })
-        .toLowerCase();
-    const dayOfWeek = daysMap[dayNameFull];
-
-    if (!dayOfWeek) {
-        console.error("Nome do dia da semana não encontrado no mapeamento.");
-        return;
-    }
-
-    tercoData.value = isQuarema() ? TercoQuaresma : TercoComun;
-    oracoesDoDia.value = tercoData.value.dias[dayOfWeek].oracoes;
-    misteriosDoDia.value = tercoData.value.dias[dayOfWeek].oracoes.misterios;
-
-    currentStep.value = 0;
-    aveMariaCount.value = 0;
-    updateContent();
-
-    const timer = setInterval(() => {
-        countdown.value--;
-        if (countdown.value === 0) {
-            clearInterval(timer);
-            showButtons.value = true;
-        }
-    }, 1000);
-
-    focusMistery.value = 17;
-    if (crucifixImage.value) {
-        crucifixImage.value.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-    }
-};
-
-const nextStep = () => {
-    currentStep.value++;
-    updateContent();
-
-    if (currentStep.value === 1) {
-        focusMistery.value = 17;
-    } else if (currentStep.value === 3 && currentStep.value === 2) {
-        focusMistery.value = 16;
-    } else if (stepType.value === "gloria" && currentStep.value <= 5) {
-        focusMistery.value = 13;
-    } else if (stepType.value === "anunciacaoMisterio") {
-        hideInitialBeads.value = true;
-        const mysteryBead = 12 - currentMystery.value * 2;
-        focusMistery.value = mysteryBead;
-    } else if (stepType.value === "paiNosso" && currentStep.value > 5) {
-        const mysteryBead = 12 - currentMystery.value * 2;
-        focusMistery.value = mysteryBead;
-    } else if (stepType.value === "gloria" && currentStep.value > 5) {
-        const lastAveMariaBead = 11 - currentMystery.value * 2;
-        focusMistery.value = lastAveMariaBead;
-    } else if (stepType.value === "salveRainha") {
-        focusMistery.value = 1;
-    } else {
-        focusMistery.value = 0;
-    }
-
-    showButtons.value = false;
-    countdown.value = 3;
-    const timer = setInterval(() => {
-        countdown.value--;
-        if (countdown.value === 0) {
-            clearInterval(timer);
-            showButtons.value = true;
-        }
-    }, 1000);
-
-    const focusedBead = document.getElementById(`bead-${focusMistery.value}`);
-    if (focusedBead) {
-        focusedBead.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-    }
-};
-
-const prayAveMaria = () => {
-    aveMariaCount.value++;
-
-    if (totalAveMarias.value === 3) {
-        focusMistery.value = 15 - (aveMariaCount.value - 1);
-    } else if (totalAveMarias.value === 10) {
-        const mysteryStartBead = 11 - currentMystery.value * 2;
-        focusMistery.value = mysteryStartBead - (aveMariaCount.value - 1);
-    }
-
-    if (aveMariaCount.value === totalAveMarias.value) {
-        nextStep();
-    }
-};
+const interactionSeq = ref([]);
+const pointer = ref(0);
+const stepsRef = ref([]);
 
 const getSteps = (oracoes, misterios) => {
     const steps = [];
@@ -160,29 +63,74 @@ const getSteps = (oracoes, misterios) => {
     return steps;
 };
 
-const updateContent = () => {
-    const oracoes = oracoesDoDia.value;
-    const misterios = misteriosDoDia.value;
+function buildInteractionSequence(steps) {
+    const seq = [];
+    let context = "initial";
+    let mysteryCount = -1;
 
-    const steps = getSteps(oracoes, misterios);
+    for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
 
-    if (currentStep.value < steps.length) {
-        const step = steps[currentStep.value];
-        currentPrayer.value = step.text;
-        stepType.value = step.type;
-
-        if (step.type === "anunciacaoMisterio") {
-            const mysteryIndex = misterios.indexOf(step.text);
-            if (mysteryIndex !== -1) {
-                currentMystery.value = mysteryIndex;
-            }
+        switch (step.type) {
+            case "inicio":
+                seq.push({ stepIndex: i, bead: 17 });
+                break;
+            case "creio":
+                seq.push({ stepIndex: i, bead: 16 });
+                break;
+            case "paiNosso":
+                if (context === "mystery") {
+                    seq.push({ stepIndex: i, bead: 12 });
+                } else {
+                    seq.push({ stepIndex: i, bead: 16 });
+                }
+                break;
+            case "aveMaria":
+                if (step.count === 3) {
+                    seq.push({ stepIndex: i, bead: 15 });
+                    seq.push({ stepIndex: i, bead: 14 });
+                    seq.push({ stepIndex: i, bead: 13 });
+                } else if (step.count === 10) {
+                    for (let b = 11; b >= 2; b--) {
+                        seq.push({ stepIndex: i, bead: b });
+                    }
+                } else {
+                    let start = Math.min(11, 11);
+                    for (let k = 0; k < step.count; k++) {
+                        seq.push({ stepIndex: i, bead: start - k });
+                    }
+                }
+                break;
+            case "gloria":
+                if (context === "initial") {
+                    seq.push({ stepIndex: i, bead: 13 });
+                } else {
+                    seq.push({ stepIndex: i, bead: 12 });
+                }
+                break;
+            case "anunciacaoMisterio":
+                context = "mystery";
+                mysteryCount++;
+                seq.push({ stepIndex: i, bead: 12 });
+                break;
+            case "salveRainha":
+                seq.push({ stepIndex: i, bead: 1 });
+                break;
+            default:
+                seq.push({ stepIndex: i, bead: 16 });
         }
+    }
 
-        if (step.type === "aveMaria") {
-            totalAveMarias.value = step.count;
-            aveMariaCount.value = 0;
-        }
-    } else {
+    return seq;
+}
+
+function setStateFromPointer() {
+    const seq = interactionSeq.value;
+    const steps = stepsRef.value;
+
+    if (!seq || seq.length === 0) return;
+
+    if (pointer.value >= seq.length) {
         currentPrayer.value = "Terço concluído! Amém.";
         stepType.value = "end";
         focusMistery.value = 0;
@@ -197,8 +145,107 @@ const updateContent = () => {
             localStorage.setItem("lastPrayedDate", today);
             daysPrayed.value = newDays;
         }
+        return;
     }
+
+    const item = seq[pointer.value];
+    focusMistery.value = item.bead;
+
+    currentStep.value = item.stepIndex;
+    const step = steps[currentStep.value];
+    currentPrayer.value = step.text;
+    stepType.value = step.type;
+
+    let mIndex = -1;
+    for (let i = 0; i <= currentStep.value; i++) {
+        if (steps[i].type === "anunciacaoMisterio") mIndex++;
+    }
+    currentMystery.value = Math.max(0, mIndex);
+
+    if (step.type === "anunciacaoMisterio" && currentMystery.value === 0) {
+        hideInitialBeads.value = true;
+    }
+
+    if (step.type === "aveMaria") {
+        totalAveMarias.value = step.count || 0;
+        let completed = 0;
+        for (let i = 0; i < pointer.value; i++) {
+            if (seq[i].stepIndex === currentStep.value) completed++;
+        }
+        aveMariaCount.value = completed;
+    } else {
+        totalAveMarias.value = 0;
+        aveMariaCount.value = 0;
+    }
+
+    scrollToBead();
+}
+
+const startPray = () => {
+    started.value = true;
+    showButtons.value = false;
+    countdown.value = 3;
+    hideInitialBeads.value = false;
+
+    const dayNameFull = new Date()
+        .toLocaleDateString("pt-BR", { weekday: "long" })
+        .toLowerCase();
+    const dayOfWeek = daysMap[dayNameFull];
+
+    if (!dayOfWeek) {
+        console.error("Nome do dia da semana não encontrado no mapeamento.");
+        return;
+    }
+
+    tercoData.value = isQuarema() ? TercoQuaresma : TercoComun;
+    oracoesDoDia.value = tercoData.value.dias[dayOfWeek].oracoes;
+    misteriosDoDia.value = tercoData.value.dias[dayOfWeek].oracoes.misterios;
+
+    const steps = getSteps(oracoesDoDia.value, misteriosDoDia.value);
+    stepsRef.value = steps;
+    interactionSeq.value = buildInteractionSequence(stepsRef.value);
+
+    pointer.value = 0;
+    setStateFromPointer();
+
+    startCountdown();
+
+    scrollToBead();
 };
+
+function nextStep() {
+    pointer.value++;
+    setStateFromPointer();
+
+    startCountdown();
+}
+
+function prayAveMaria() {
+    pointer.value++;
+    setStateFromPointer();
+}
+
+function scrollToBead() {
+    const focusedBead = document.getElementById(`bead-${focusMistery.value}`);
+    if (focusedBead) {
+        focusedBead.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
+}
+
+function startCountdown() {
+    showButtons.value = false;
+    countdown.value = 3;
+    const timer = setInterval(() => {
+        countdown.value--;
+        if (countdown.value === 0) {
+            clearInterval(timer);
+            showButtons.value = true;
+        }
+    }, 1000);
+}
 
 onMounted(() => {
     const storedDays = localStorage.getItem("days");
@@ -271,6 +318,7 @@ function isQuarema() {
                         </span>
                     </div>
                 </div>
+
                 <img
                     ref="crucifixImage"
                     id="bead-17"
