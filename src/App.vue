@@ -13,7 +13,7 @@ const hideInitialBeads = ref(false);
 
 const started = ref(false);
 const showButtons = ref(false);
-const countdown = ref(5);
+const countdown = ref(3);
 const showAboutModal = ref(false);
 
 const tercoData = ref(null);
@@ -43,7 +43,7 @@ const daysMap = {
 const startPray = () => {
     started.value = true;
     showButtons.value = false;
-    countdown.value = 5;
+    countdown.value = 3;
     hideInitialBeads.value = false;
 
     const dayNameFull = new Date()
@@ -87,9 +87,7 @@ const nextStep = () => {
 
     if (currentStep.value === 1) {
         focusMistery.value = 17;
-    } else if (currentStep.value === 2) {
-        focusMistery.value = 16;
-    } else if (currentStep.value === 3) {
+    } else if (currentStep.value === 3 && currentStep.value === 2) {
         focusMistery.value = 16;
     } else if (stepType.value === "gloria" && currentStep.value <= 5) {
         focusMistery.value = 13;
@@ -110,7 +108,7 @@ const nextStep = () => {
     }
 
     showButtons.value = false;
-    countdown.value = 5;
+    countdown.value = 3;
     const timer = setInterval(() => {
         countdown.value--;
         if (countdown.value === 0) {
@@ -259,8 +257,14 @@ function isQuarema() {
                             'w-10 h-10': lagerMistery.includes(value),
                         }"
                     >
-                        <span v-if="value === 12">
-                            {{ currentMystery + 1 }}
+                        <span v-if="value === 12 || value === 1">
+                            {{
+                                value === 12
+                                    ? currentMystery + 1
+                                    : currentMystery != 5
+                                    ? currentMystery + 2
+                                    : ""
+                            }}
                         </span>
                         <span v-else-if="value >= 2 && value <= 11">
                             {{ value - 1 }}
