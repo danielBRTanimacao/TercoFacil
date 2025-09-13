@@ -6,15 +6,19 @@ import TercoQuaresma from "./assets/json/terco_quaresma.json";
 
 import Header from "./components/Header.vue";
 import About from "./components/ui/modal/About.vue";
+import Style from "./components/ui/modal/Style.vue";
 
 const crucifixImage = ref(null);
 const focusMistery = ref(0);
 const hideInitialBeads = ref(false);
 
 const started = ref(false);
+const ended = ref(false);
 const showButtons = ref(false);
 const countdown = ref(3);
+
 const showAboutModal = ref(false);
+const showStyleModal = ref(false);
 
 const tercoData = ref(null);
 const oracoesDoDia = ref(null);
@@ -43,6 +47,13 @@ const daysMap = {
 const interactionSeq = ref([]);
 const pointer = ref(0);
 const stepsRef = ref([]);
+
+const currentTheme = ref("theme-brown");
+const handleChangeTheme = (theme) => {
+    currentTheme.value = `theme-${theme}`;
+    localStorage.setItem("terco-theme", currentTheme.value);
+    showStyleModal.value = false;
+};
 
 const getSteps = (oracoes, misterios) => {
     const steps = [];
@@ -134,6 +145,7 @@ function setStateFromPointer() {
         currentPrayer.value = "Terço concluído! Amém.";
         stepType.value = "end";
         focusMistery.value = 0;
+        ended.value = true;
 
         const lastPrayedDate = localStorage.getItem("lastPrayedDate");
         const today = new Date().toDateString();
@@ -248,11 +260,31 @@ function startCountdown() {
 }
 
 onMounted(() => {
+    const storedTheme = localStorage.getItem("terco-theme");
+    if (storedTheme) {
+        currentTheme.value = storedTheme;
+    }
+
     const storedDays = localStorage.getItem("days");
     if (storedDays) {
         daysPrayed.value = parseInt(storedDays, 10);
     }
     focusMistery.value = 0;
+
+    window.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (!started.value) {
+                startPray();
+            } else if (showButtons.value && !ended.value) {
+                if (stepType.value === "aveMaria") {
+                    prayAveMaria();
+                } else {
+                    nextStep();
+                }
+            }
+        }
+    });
 });
 
 function isQuarema() {
@@ -265,22 +297,35 @@ function isQuarema() {
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen">
-        <Header :days-prayed="daysPrayed" @open-about="showAboutModal = true" />
+    <div class="flex flex-col min-h-screen" :class="currentTheme">
+        <Header
+            :days-prayed="daysPrayed"
+            @open-about="showAboutModal = true"
+            @open-style="showStyleModal = true"
+        />
 
         <main
             class="flex-1 flex flex-col justify-center items-center text-center"
         >
-            <aside
-                class="italic pb-5 transition-all"
-                :class="{ 'transform translate-y-full opacity-0': started }"
-                v-if="!started"
+            <transition
+                enter-active-class="transition duration-700 ease-out"
+                enter-from-class="opacity-0 scale-75 translate-y-5"
+                enter-to-class="opacity-100 scale-100 translate-y-0"
+                leave-active-class="transition duration-700 ease-in"
+                leave-from-class="opacity-100 scale-100 translate-y-0"
+                leave-to-class="opacity-0 scale-90 -translate-y-5"
             >
-                <p class="font-nightshade text-3xl lg:text-5xl text-dark-wine">
-                    O Terço é a 'arma' para estes tempos.
-                </p>
-                <p class="opacity-50 text-sm">~São Padre Pio de Pietrelcina</p>
-            </aside>
+                <aside v-if="!started" class="italic pb-5">
+                    <p
+                        class="font-nightshade text-3xl lg:text-5xl text-dark-wine"
+                    >
+                        O Terço é a 'arma' para estes tempos.
+                    </p>
+                    <p class="opacity-50 text-sm">
+                        ~São Padre Pio de Pietrelcina
+                    </p>
+                </aside>
+            </transition>
 
             <div
                 ref="actualTerco"
@@ -298,7 +343,7 @@ function isQuarema() {
                     }"
                 >
                     <div
-                        class="rounded-full bg-gray-900 text-white flex items-center justify-center"
+                        class="rounded-full bg-gray-900 text-white flex items-center justify-center transition-transform duration-700"
                         :class="{
                             'w-6 h-6': !lagerMistery.includes(value),
                             'w-10 h-10': lagerMistery.includes(value),
@@ -308,7 +353,7 @@ function isQuarema() {
                             {{
                                 value === 12
                                     ? currentMystery + 1
-                                    : currentMystery != 5
+                                    : currentMystery + 2 != 6
                                     ? currentMystery + 2
                                     : ""
                             }}
@@ -319,20 +364,29 @@ function isQuarema() {
                     </div>
                 </div>
 
-                <img
-                    ref="crucifixImage"
-                    id="bead-17"
-                    :class="{
-                        'scale-125 transition-all duration-700 ease-in-out':
-                            started,
-                        hidden: hideInitialBeads,
-                        'opacity-100': focusMistery === 17,
-                        'opacity-25': started && focusMistery !== 17,
-                    }"
-                    width="175"
-                    src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
-                    alt="crucifixImage"
-                />
+                <transition
+                    enter-active-class="transition duration-700 ease-out"
+                    enter-from-class="opacity-0 scale-75 translate-y-5"
+                    enter-to-class="opacity-100 scale-100 translate-y-0"
+                    leave-active-class="transition duration-700 ease-in"
+                    leave-from-class="opacity-100 scale-100 translate-y-0"
+                    leave-to-class="opacity-0 scale-90 -translate-y-5"
+                >
+                    <img
+                        v-if="!hideInitialBeads"
+                        ref="crucifixImage"
+                        id="bead-17"
+                        :class="{
+                            'scale-125 transition-all duration-700 ease-in-out':
+                                started,
+                            'opacity-100': focusMistery === 17,
+                            'opacity-25': started && focusMistery !== 17,
+                        }"
+                        width="175"
+                        src="https://png.pngtree.com/png-vector/20240517/ourmid/pngtree-jesus-crucifix-narrative-composition-png-image_12474882.png"
+                        alt="crucifixImage"
+                    />
+                </transition>
             </div>
         </main>
 
@@ -344,9 +398,10 @@ function isQuarema() {
                 <button
                     @click="startPray"
                     type="button"
-                    class="w-full lg:w-[50%] text-4xl font-playfair shadow-xl bg-brown cursor-pointer text-white font-black py-3 rounded-md"
+                    class="w-full lg:w-[50%] leading-7 text-4xl flex items-center flex-col font-playfair shadow-xl bg-brown cursor-pointer text-white font-black py-3 md:pt-3 md:pb-2 rounded-md"
                 >
                     COMEÇAR
+                    <small class="text-sm hidden md:block">press space</small>
                 </button>
             </div>
             <aside v-else class="p-2">
@@ -378,7 +433,7 @@ function isQuarema() {
                             class="w-full text-md md:text-xl md:w-75 font-playfair shadow-xl bg-light-brown font-black py-2 md:py-3 rounded-md"
                         >
                             <span v-if="showButtons"
-                                >Ave Maria ({{ aveMariaCount }} /
+                                >Ave Maria ({{ aveMariaCount + 1 }} /
                                 {{ totalAveMarias }})</span
                             >
                             <span v-else>{{ countdown }}s</span>
@@ -389,6 +444,7 @@ function isQuarema() {
                             @click="nextStep"
                             type="button"
                             :disabled="!showButtons"
+                            v-if="!ended"
                             :class="{
                                 'opacity-75 cursor-not-allowed': !showButtons,
                                 'cursor-pointer': showButtons,
@@ -404,5 +460,10 @@ function isQuarema() {
         </footer>
 
         <About v-if="showAboutModal" @close="showAboutModal = false" />
+        <Style
+            v-if="showStyleModal"
+            @close="showStyleModal = false"
+            @change-theme="handleChangeTheme"
+        />
     </div>
 </template>

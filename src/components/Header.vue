@@ -6,7 +6,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["open-about"]);
+const emit = defineEmits(["open-about", "open-style"]);
 </script>
 
 <template>
@@ -33,6 +33,7 @@ const emit = defineEmits(["open-about"]);
                 <button
                     type="button"
                     class="px-4 py-2 cursor-pointer rounded-sm text-lg opacity-75 bg-outline-light-brown"
+                    @click="emit('open-style')"
                 >
                     Estilizar
                 </button>

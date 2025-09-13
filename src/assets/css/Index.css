@@ -8,12 +8,29 @@
     --bg-brown: #8d4d44;
     --bg-brown-hover: #c88676;
     --bg-light-brown: #ebb3a3;
+    --text-brown: var(--bg-brown);
+    --text-dark-wine: #422032;
+    --bg-header-brown: var(--bg-brown);
+    --bg-footer-brown: var(--bg-brown);
+    --bg-btn-brown: var(--bg-light-brown);
+    --bg-btn-brown-hover: var(--bg-brown-hover);
+    --bg-outline-light-brown: var(--bg-brown-lightness);
+    --text-outline-light-brown: var(--bg-brown-lightness);
+}
 
-    --bg-lightness-wine: #f2c9d7;
-    --bg-pink-wine: #f39ebd;
-    --bg-pink-wine-hover: #d6749b;
-    --bg-light-wine: #8f395e;
-    --bg-dark-wine: #562e46;
+.theme-purple {
+    --bg-brown-lightness: #eed5e9;
+    --bg-brown: #5d2b45;
+    --bg-brown-hover: #9c4a6e;
+    --bg-light-brown: #d197ad;
+    --text-brown: var(--bg-brown);
+    --text-dark-wine: #361726;
+    --bg-header-brown: var(--bg-brown);
+    --bg-footer-brown: var(--bg-brown);
+    --bg-btn-brown: var(--bg-light-brown);
+    --bg-btn-brown-hover: var(--bg-brown-hover);
+    --bg-outline-light-brown: #e2cede;
+    --text-outline-light-brown: #f2e7f0;
 }
 
 body {
@@ -49,6 +66,10 @@ body {
 
 .bg-brown {
     background-color: var(--bg-brown);
+}
+
+.bg-hardcoded-brown {
+    background-color: #8d4d44;
 }
 
 .bg-light-brown,
