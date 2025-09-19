@@ -358,9 +358,9 @@ function isQuarema() {
                                     : ""
                             }}
                         </span>
-                        <span v-else-if="value >= 2 && value <= 11">
+                        <small v-else-if="value >= 2 && value <= 11">
                             {{ value - 1 }}
-                        </span>
+                        </small>
                     </div>
                 </div>
 
