@@ -345,8 +345,8 @@ function isQuarema() {
                     <div
                         class="rounded-full bg-gray-900 text-white flex items-center justify-center transition-transform duration-700"
                         :class="{
-                            'w-6 h-6': !lagerMistery.includes(value),
-                            'w-10 h-10': lagerMistery.includes(value),
+                            'w-6 h-6 shadow-md': !lagerMistery.includes(value),
+                            'w-10 h-10 shadow-xl': lagerMistery.includes(value),
                         }"
                     >
                         <span v-if="value === 12 || value === 1">

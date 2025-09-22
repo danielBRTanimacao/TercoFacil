@@ -2,9 +2,7 @@
     <div
         class="fixed inset-0 bg-gray-500/50 flex items-center justify-center z-50"
     >
-        <div
-            class="bg-white p-6 rounded-lg shadow-xl max-w-lg mx-auto h-75 w-75"
-        >
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg mx-auto w-75">
             <div class="flex items-center justify-between w-full">
                 <h2 class="text-2xl font-bold opacity-50 font-playfair">
                     TEMA PRINCIPAL
@@ -41,6 +39,12 @@
                     Vinho
                 </button>
             </div>
+            <div>
+                <h2 class="text-2xl font-bold opacity-50 font-playfair">
+                    COR DAS CASAS
+                </h2>
+            </div>
+            <div class="flex gap-4 mt-6 my-4">Em desenvolvimento...</div>
         </div>
     </div>
 </template>
