@@ -7,6 +7,7 @@ import TercoQuaresma from "./assets/json/terco_quaresma.json";
 import Header from "./components/Header.vue";
 import About from "./components/ui/modal/About.vue";
 import Style from "./components/ui/modal/Style.vue";
+import AccessBtn from "./components/ui/accessibility/AccessBtn.vue";
 
 const crucifixImage = ref(null);
 const focusMistery = ref(0);
@@ -487,5 +488,6 @@ function isQuarema() {
             @change-bead-color="handleChangeBeadColor"
             :selected-color="currentBeadColor"
         />
+        <AccessBtn :current-prayer="currentPrayer" />
     </div>
 </template>
