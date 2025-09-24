@@ -43,14 +43,41 @@
                 <h2 class="text-2xl font-bold opacity-50 font-playfair">
                     COR DAS CASAS
                 </h2>
+                <article class="flex items-center justify-center gap-3">
+                    <div
+                        v-for="color in beadColors"
+                        :key="color"
+                        :class="[
+                            color,
+                            'h-12 w-12 rounded-full circle-3d',
+                            { selected: selectedColor === color },
+                        ]"
+                        @click="emit('change-bead-color', color)"
+                    ></div>
+                </article>
             </div>
-            <div class="flex gap-4 mt-6 my-4">Em desenvolvimento...</div>
+
+            <div class="mt-4">
+                <h2 class="text-2xl font-bold opacity-50 font-playfair">
+                    DESATIVAR CONTADOR
+                </h2>
+                <div class="flex gap-4 mt-2 my-4">Em desenvolvimento...</div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { defineEmits } from "vue";
+import { defineEmits, defineProps } from "vue";
 
-const emit = defineEmits(["close", "change-theme"]);
+const emit = defineEmits(["close", "change-theme", "change-bead-color"]);
+
+const props = defineProps({
+    selectedColor: {
+        type: String,
+        default: "bg-gray-900",
+    },
+});
+
+const beadColors = ["bg-gray-900", "bg-white", "bg-pink-900", "bg-orange-600"];
 </script>

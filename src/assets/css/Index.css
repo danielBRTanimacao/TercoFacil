@@ -117,3 +117,37 @@ body {
         padding: 0 6rem;
     }
 }
+
+.circle-3d {
+    position: relative;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.circle-3d.bg-gray-900 {
+    background: radial-gradient(circle at 25% 25%, #666, #333, #000);
+}
+
+.circle-3d.bg-white {
+    background: radial-gradient(circle at 25% 25%, #fff, #eee, #ddd);
+}
+
+.circle-3d.bg-pink-900 {
+    background: radial-gradient(circle at 25% 25%, #d42a78, #a71e5f, #7a1544);
+}
+
+.circle-3d.bg-orange-600 {
+    background: radial-gradient(circle at 25% 25%, #ffb366, #ff8c00, #cc7000);
+}
+
+.circle-3d.selected {
+    border: 4px solid #4a90e2;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 6px #4a90e2, 0 8px 15px rgba(0, 0, 0, 0.4);
+}
+
+.circle-3d:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}

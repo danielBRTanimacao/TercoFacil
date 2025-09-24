@@ -49,10 +49,17 @@ const pointer = ref(0);
 const stepsRef = ref([]);
 
 const currentTheme = ref("theme-brown");
+const currentBeadColor = ref("bg-gray-900");
+
 const handleChangeTheme = (theme) => {
     currentTheme.value = `theme-${theme}`;
     localStorage.setItem("terco-theme", currentTheme.value);
     showStyleModal.value = false;
+};
+
+const handleChangeBeadColor = (color) => {
+    currentBeadColor.value = color;
+    localStorage.setItem("terco-bead-color", color);
 };
 
 const getSteps = (oracoes, misterios) => {
@@ -265,6 +272,11 @@ onMounted(() => {
         currentTheme.value = storedTheme;
     }
 
+    const storedBeadColor = localStorage.getItem("terco-bead-color");
+    if (storedBeadColor) {
+        currentBeadColor.value = storedBeadColor;
+    }
+
     const storedDays = localStorage.getItem("days");
     if (storedDays) {
         daysPrayed.value = parseInt(storedDays, 10);
@@ -343,11 +355,19 @@ function isQuarema() {
                     }"
                 >
                     <div
-                        class="rounded-full bg-gray-900 text-white flex items-center justify-center transition-transform duration-700"
-                        :class="{
-                            'w-6 h-6 shadow-md': !lagerMistery.includes(value),
-                            'w-10 h-10 shadow-xl': lagerMistery.includes(value),
-                        }"
+                        :class="[
+                            currentBeadColor,
+                            'circle-3d flex items-center justify-center transition-transform duration-700',
+                            {
+                                'text-white': currentBeadColor !== 'bg-white',
+                                'text-gray-600':
+                                    currentBeadColor === 'bg-white',
+                                'w-6 h-6 shadow-md':
+                                    !lagerMistery.includes(value),
+                                'w-10 h-10 shadow-xl':
+                                    lagerMistery.includes(value),
+                            },
+                        ]"
                     >
                         <span v-if="value === 12 || value === 1">
                             {{
@@ -464,6 +484,8 @@ function isQuarema() {
             v-if="showStyleModal"
             @close="showStyleModal = false"
             @change-theme="handleChangeTheme"
+            @change-bead-color="handleChangeBeadColor"
+            :selected-color="currentBeadColor"
         />
     </div>
 </template>
