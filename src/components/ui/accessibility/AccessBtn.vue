@@ -48,7 +48,6 @@ const props = defineProps({
 const showAcessibilityOptions = ref(false);
 const isAutoReadEnabled = ref(false);
 
-// Referência do template para o menu de acessibilidade
 const menuRef = ref(null);
 
 const speak = (text) => {
@@ -91,7 +90,6 @@ const toggleAutoRead = () => {
     speak(message);
 };
 
-// Usa a função `watch` para monitorar a prop `currentPrayer`
 watch(
     () => props.currentPrayer,
     (newPrayer, oldPrayer) => {
@@ -101,14 +99,12 @@ watch(
     }
 );
 
-// Função para fechar o menu se o clique for fora dele
 const handleClickOutside = (event) => {
-    // Se o menu estiver aberto e o clique não foi no menu nem no botão, feche o menu
     if (
         showAcessibilityOptions.value &&
         menuRef.value &&
         !menuRef.value.contains(event.target) &&
-        !event.target.closest("button") // Garante que cliques no botão de acessibilidade não fecham o menu
+        !event.target.closest("button")
     ) {
         showAcessibilityOptions.value = false;
         speak("Menu de acessibilidade fechado.");
@@ -116,12 +112,10 @@ const handleClickOutside = (event) => {
 };
 
 onMounted(() => {
-    // Adiciona o ouvinte de clique quando o componente é montado
     document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
-    // Remove o ouvinte de clique quando o componente é destruído
     document.removeEventListener("mousedown", handleClickOutside);
 });
 </script>
