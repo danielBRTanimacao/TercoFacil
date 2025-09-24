@@ -40,6 +40,7 @@
 
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
+import axios from "axios";
 
 const avemariaactual = ref(0);
 
@@ -52,35 +53,26 @@ const isAutoReadEnabled = ref(false);
 
 const menuRef = ref(null);
 
-let selectedVoice = null;
+let audioPlayer = null;
 
-const speak = (text) => {
-    if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "pt-BR";
-
-        if (!selectedVoice) {
-            const voices = window.speechSynthesis.getVoices();
-            const googleMaleVoice = voices.find(
-                (voice) =>
-                    voice.name.includes("Google") &&
-                    voice.name.includes("male") &&
-                    voice.lang === "pt-BR"
-            );
-
-            selectedVoice =
-                googleMaleVoice || voices.find((v) => v.lang === "pt-BR");
+const speak = async (text) => {
+    try {
+        if (audioPlayer) {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
         }
 
-        if (selectedVoice) {
-            utterance.voice = selectedVoice;
-        }
+        const response = await axios.post("/api/speak", { text });
+        const audioContent = response.data.audioContent;
 
-        window.speechSynthesis.speak(utterance);
-    } else {
-        console.error("API de Síntese de Fala não suportada neste navegador.");
+        const audio = new Audio(`data:audio/mp3;base64,${audioContent}`);
+        audioPlayer = audio;
+        audio.play();
+    } catch (error) {
+        console.error("Erro ao converter texto para fala:", error);
+        const fallbackUtterance = new SpeechSynthesisUtterance(text);
+        fallbackUtterance.lang = "pt-BR";
+        window.speechSynthesis.speak(fallbackUtterance);
     }
 };
 
@@ -142,13 +134,13 @@ const handleClickOutside = (event) => {
 };
 
 onMounted(() => {
-    window.speechSynthesis.onvoiceschanged = () => {
-        selectedVoice = null;
-    };
     document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
+    if (audioPlayer) {
+        audioPlayer.pause();
+    }
     window.speechSynthesis.cancel();
     document.removeEventListener("mousedown", handleClickOutside);
 });
