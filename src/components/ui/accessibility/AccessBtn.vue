@@ -41,6 +41,8 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
 
+const avemariaactual = ref(0);
+
 const props = defineProps({
     currentPrayer: String,
 });
@@ -85,17 +87,46 @@ const toggleAcessibilityMenu = () => {
 const toggleAutoRead = () => {
     isAutoReadEnabled.value = !isAutoReadEnabled.value;
     const message = isAutoReadEnabled.value
-        ? "Leitura automática ativada.."
+        ? "Leitura automática ativada."
         : "Leitura automática desativada.";
     speak(message);
 };
 
+let lastPrayer = "";
+
 watch(
     () => props.currentPrayer,
-    (newPrayer, oldPrayer) => {
-        if (isAutoReadEnabled.value && newPrayer !== oldPrayer) {
+    (newPrayer) => {
+        if (!isAutoReadEnabled.value) {
+            return;
+        }
+
+        if (newPrayer === lastPrayer) {
+            return;
+        }
+
+        if (
+            newPrayer.includes("Ave Maria") &&
+            !lastPrayer.includes("Ave Maria")
+        ) {
+            if (avemariaactual.value === 0) {
+                speak(`${newPrayer}. Esta oração se repete mais duas vezes.`);
+                avemariaactual.value = 1;
+            } else {
+                speak(`${newPrayer}. Esta oração se repete mais nove vezes.`);
+                avemariaactual.value = 2;
+            }
+        } else {
+            if (
+                !newPrayer.includes("Ave Maria") &&
+                lastPrayer.includes("Ave Maria")
+            ) {
+                avemariaactual.value = 0;
+            }
             speak(newPrayer);
         }
+
+        lastPrayer = newPrayer;
     }
 );
 
