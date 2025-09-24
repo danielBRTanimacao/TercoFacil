@@ -52,21 +52,32 @@ const isAutoReadEnabled = ref(false);
 
 const menuRef = ref(null);
 
+let selectedVoice = null;
+
 const speak = (text) => {
     if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = "pt-BR";
-        const voices = window.speechSynthesis.getVoices();
-        const femaleVoice = voices.find(
-            (voice) =>
-                voice.name.includes("Google") &&
-                voice.name.includes("female") &&
-                voice.lang === "pt-BR"
-        );
 
-        if (femaleVoice) {
-            utterance.voice = femaleVoice;
+        if (!selectedVoice) {
+            const voices = window.speechSynthesis.getVoices();
+            const googleMaleVoice = voices.find(
+                (voice) =>
+                    voice.name.includes("Google") &&
+                    voice.name.includes("male") &&
+                    voice.lang === "pt-BR"
+            );
+
+            selectedVoice =
+                googleMaleVoice || voices.find((v) => v.lang === "pt-BR");
         }
+
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+
         window.speechSynthesis.speak(utterance);
     } else {
         console.error("API de Síntese de Fala não suportada neste navegador.");
@@ -93,15 +104,10 @@ const toggleAutoRead = () => {
 };
 
 let lastPrayer = "";
-
 watch(
     () => props.currentPrayer,
     (newPrayer) => {
-        if (!isAutoReadEnabled.value) {
-            return;
-        }
-
-        if (newPrayer === lastPrayer) {
+        if (!isAutoReadEnabled.value || newPrayer === lastPrayer) {
             return;
         }
 
@@ -114,15 +120,8 @@ watch(
                 avemariaactual.value = 1;
             } else {
                 speak(`${newPrayer}. Esta oração se repete mais nove vezes.`);
-                avemariaactual.value = 2;
             }
         } else {
-            if (
-                !newPrayer.includes("Ave Maria") &&
-                lastPrayer.includes("Ave Maria")
-            ) {
-                avemariaactual.value = 0;
-            }
             speak(newPrayer);
         }
 
@@ -143,10 +142,14 @@ const handleClickOutside = (event) => {
 };
 
 onMounted(() => {
+    window.speechSynthesis.onvoiceschanged = () => {
+        selectedVoice = null;
+    };
     document.addEventListener("mousedown", handleClickOutside);
 });
 
 onUnmounted(() => {
+    window.speechSynthesis.cancel();
     document.removeEventListener("mousedown", handleClickOutside);
 });
 </script>
