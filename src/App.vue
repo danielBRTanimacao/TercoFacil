@@ -341,14 +341,14 @@ function isQuarema() {
 
             <div
                 ref="actualTerco"
-                class="h-[55dvh] w-full overflow-hidden flex items-center justify-center flex-col gap-3"
+                class="h-[60dvh] w-full overflow-hidden flex items-center justify-center flex-col gap-3"
             >
                 <div
                     v-for="value in 16"
                     :key="value"
                     :id="`bead-${value}`"
                     :class="{
-                        'opacity-25 transition-all duration-700 ease-in-out':
+                        'opacity-50 transition-all duration-700 ease-in-out':
                             started,
                         hidden: hideInitialBeads && value > 12,
                         'scale-125 opacity-100': focusMistery == value,
@@ -360,7 +360,7 @@ function isQuarema() {
                             'circle-3d flex items-center justify-center transition-transform duration-700',
                             {
                                 'text-white': currentBeadColor !== 'bg-white',
-                                'text-gray-600':
+                                'text-gray-900':
                                     currentBeadColor === 'bg-white',
                                 'w-6 h-6 shadow-md':
                                     !lagerMistery.includes(value),
@@ -397,7 +397,7 @@ function isQuarema() {
                         ref="crucifixImage"
                         id="bead-17"
                         :class="{
-                            'scale-125 transition-all duration-700 ease-in-out':
+                            'pt-2 scale-125 transition-all duration-700 ease-in-out':
                                 started,
                             'opacity-100': focusMistery === 17,
                             'opacity-25': started && focusMistery !== 17,
