@@ -21,7 +21,7 @@
                     class="flex flex-col md:flex-row items-center gap-4 w-full"
                 >
                     <div
-                        class="w-50 h-50 rounded-md bg-center bg-cover bg-[url('https://danielportfolio-lake.vercel.app/assets/me2-CV6R1ji0.webp')]"
+                        class="w-50 h-50 rounded-md bg-center bg-cover bg-[url('/me2.webp')]"
                     ></div>
                     <aside>
                         <div class="flex flex-col items-start justify-center">
