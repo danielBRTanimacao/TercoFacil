@@ -61,7 +61,7 @@
                 <h2 class="text-2xl font-bold opacity-50 font-playfair">
                     DESATIVAR CONTADOR
                 </h2>
-                <div class="flex gap-4 mt-2 my-4">Em desenvolvimento...</div>
+                <div class="flex gap-4 mt-2 my-4">Toggle</div>
             </div>
         </div>
     </div>
